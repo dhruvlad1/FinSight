@@ -27,16 +27,18 @@ def chunk_text(text: str, chunk_size: int = 700, overlap: int = 120) -> list[str
 
 
 def create_chunks(df: pd.DataFrame) -> pd.DataFrame:
-    """Create retrieval chunks while preserving transcript metadata."""
-    records = []
+    """Create globally unique chunks while preserving transcript metadata."""
+    chunks = []
+    next_chunk_id = 0
 
     for _, row in df.iterrows():
-        chunks = chunk_text(row["text"])
+        text_chunks = chunk_text(row["text"])
 
-        for chunk_id, chunk in enumerate(chunks):
-            record = row.to_dict()
-            record["text"] = chunk
-            record["chunk_id"] = chunk_id
-            records.append(record)
+        for chunk in text_chunks:
+            item = row.to_dict()
+            item["text"] = chunk
+            item["chunk_id"] = next_chunk_id
+            chunks.append(item)
+            next_chunk_id += 1
 
-    return pd.DataFrame(records)
+    return pd.DataFrame(chunks)

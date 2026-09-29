@@ -1,6 +1,7 @@
 import pandas as pd
 import streamlit as st
 
+from finsight.extraction import extract_guidance
 from finsight.rag import format_sources, generate_answer, retrieve_context
 from finsight.retriever import FaissRetriever
 
@@ -29,7 +30,6 @@ chunks = load_chunks()
 retriever = load_retriever()
 
 
-# Company ticker -> full company name
 COMPANY_NAMES = {
     "A": "Agilent Technologies, Inc.",
     "AAPL": "Apple Inc.",
@@ -117,3 +117,45 @@ if st.button("Ask", type="primary"):
                 )
 
                 st.write(source["text"])
+
+
+# Management Guidance Tracker
+st.divider()
+st.subheader("Management Guidance Tracker")
+
+guidance_chunks = chunks[chunks["ticker"].eq(ticker)].copy()
+
+if quarter != "All":
+    guidance_chunks = guidance_chunks[
+        guidance_chunks["quarter"].eq(int(quarter))
+    ]
+
+guidance_rows = []
+
+for _, row in guidance_chunks.iterrows():
+    statements = extract_guidance(row["text"])
+
+    for statement in statements:
+        guidance_rows.append(
+            {
+                "Quarter": f"Q{row['quarter']} {row['year']}",
+                "Speaker": row["speaker"],
+                "Guidance": statement,
+            }
+        )
+
+if guidance_rows:
+    guidance_df = pd.DataFrame(guidance_rows)
+
+    st.write(
+        f"Found **{len(guidance_df)}** guidance statements "
+        f"for {COMPANY_NAMES.get(ticker, ticker)}."
+    )
+
+    st.dataframe(
+        guidance_df,
+        use_container_width=True,
+        hide_index=True,
+    )
+else:
+    st.info("No management guidance statements were found.")

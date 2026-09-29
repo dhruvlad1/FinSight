@@ -1,0 +1,32 @@
+[
+  {
+    "question": "What was Apple's revenue in Q1 2020?",
+    "ticker": "AAPL",
+    "quarter": 1,
+    "relevant_chunk_ids": [699, 702]
+  },
+  {
+    "question": "What was Apple's revenue in Q2 2020?",
+    "ticker": "AAPL",
+    "quarter": 2,
+    "relevant_chunk_ids": [644]
+  },
+  {
+    "question": "What was Apple's revenue in Q3 2020?",
+    "ticker": "AAPL",
+    "quarter": 3,
+    "relevant_chunk_ids": [572]
+  },
+  {
+    "question": "What was Apple's revenue in Q4 2020?",
+    "ticker": "AAPL",
+    "quarter": 4,
+    "relevant_chunk_ids": [521]
+  },
+  {
+    "question": "What was Apple's guidance for the December quarter?",
+    "ticker": "AAPL",
+    "quarter": 4,
+    "relevant_chunk_ids": [517, 521]
+  }
+]

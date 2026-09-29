@@ -21,8 +21,21 @@ Strict grounding rules:
    "The retrieved transcript context does not contain enough evidence to answer this question."
 5. When answering with a specific number, make sure that exact number appears in the provided context.
 6. If the question asks about a specific quarter, do not substitute annual or another-quarter information.
+7. Use the quarter and year labels exactly as provided in the transcript context.
+8. Do not infer or rename fiscal quarters based on transcript dates.
 
 Keep the answer concise and factual.
+
+Formatting rules:
+- Use plain text or simple Markdown.
+- When comparing multiple quarters, use a clean Markdown table when useful.
+- Write currency amounts normally, such as "$91.8 billion".
+- Never put currency amounts, percentages, or other numbers inside backticks.
+- Do not use inline code formatting for prose or numbers.
+- Keep spaces between all words.
+- Do not include citation markers like "[AAPL Q1 2020 | Luca Maestri]" unless explicitly requested.
+- Only report sequential changes if they can be calculated directly from explicitly stated quarterly figures.
+- Clearly distinguish reported figures from calculations.
 """
 
 EMBEDDING_MODEL = load_embedding_model()
@@ -60,7 +73,7 @@ def retrieve_context(
 
     for _, row in retrieved.iterrows():
         context_parts.append(
-            f"[{row['ticker']} {row['quarter']} {row['year']} | "
+            f"[{row['ticker']} Q{row['quarter']} {row['year']} | "
             f"{row['speaker']}]\n{row['text']}"
         )
 
@@ -120,6 +133,7 @@ def generate_answer(
         "answer": response.choices[0].message.content,
         "sources": source_list,
     }
+
 
 def format_sources(sources: list[dict]) -> list[str]:
     """Format retrieved chunks for display in the UI."""

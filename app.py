@@ -17,8 +17,39 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    [data-testid="stAppViewContainer"] {
-        background: #f4f6f8;
+    :root {
+        color-scheme: dark;
+    }
+
+    header[data-testid="stHeader"] {
+        background: transparent;
+        visibility: visible;
+    }
+
+    header[data-testid="stHeader"] [data-testid="stToolbarActions"],
+    header[data-testid="stHeader"] [data-testid="stAppDeployButton"],
+    header[data-testid="stHeader"] [data-testid="stMainMenu"],
+    [data-testid="stDecoration"],
+    #MainMenu,
+    footer {
+        display: none;
+    }
+
+    [data-testid="stSidebarCollapseButton"] button,
+    [data-testid="stSidebarCollapsedControl"],
+    [data-testid="stSidebarCollapsedControl"] button {
+        visibility: visible !important;
+    }
+
+    [data-testid="stAppViewContainer"],
+    [data-testid="stAppViewContainer"] > .main,
+    [data-testid="stMain"] {
+        background: #0b1220;
+        color: #e5edf5;
+    }
+
+    [data-testid="stMainBlockContainer"] {
+        padding-top: 2rem;
     }
 
     [data-testid="stSidebar"] {
@@ -36,8 +67,8 @@ st.markdown(
     }
 
     .hero {
-        background: #111827;
-        border: 1px solid #263244;
+        background: #111a2b;
+        border: 1px solid #2a3b52;
         border-radius: 12px;
         padding: 2rem 2.25rem 1.75rem;
         margin-bottom: 1.25rem;
@@ -91,7 +122,7 @@ st.markdown(
     }
 
     .metric-label {
-        color: #64748b;
+        color: #91a3b8;
         font-size: 0.72rem;
         font-weight: 700;
         letter-spacing: 0.08em;
@@ -99,7 +130,7 @@ st.markdown(
     }
 
     .metric-value {
-        color: #111827;
+        color: #f8fafc;
         font-size: 1.8rem;
         font-weight: 750;
         line-height: 1.1;
@@ -107,10 +138,10 @@ st.markdown(
     }
 
     .context-strip {
-        background: #e8f3f0;
+        background: #132d2d;
         border-left: 3px solid #258f7c;
         border-radius: 6px;
-        color: #193b37;
+        color: #d8f1eb;
         padding: 0.8rem 1rem;
         margin: 0.5rem 0 1.25rem;
     }
@@ -121,30 +152,30 @@ st.markdown(
     }
 
     .context-period {
-        color: #42635e;
+        color: #9bc6bc;
         font-size: 0.88rem;
         margin-top: 0.2rem;
     }
 
     .answer-card {
-        background: #ffffff;
-        border: 1px solid #d8e0e8;
+        background: #111a2b;
+        border: 1px solid #2a3b52;
         border-left: 4px solid #258f7c;
         border-radius: 8px;
-        color: #172033;
+        color: #e5edf5;
         font-size: 1.03rem;
         line-height: 1.65;
         padding: 1.25rem 1.4rem;
     }
 
     .evidence-summary {
-        color: #475569;
+        color: #9eacbd;
         font-size: 0.92rem;
         margin: -0.4rem 0 0.8rem;
     }
 
     .source-meta {
-        color: #334155;
+        color: #dbe7f3;
         font-size: 0.9rem;
         font-weight: 650;
     }

@@ -1,38 +1,29 @@
+import json
 from pathlib import Path
 
 import pandas as pd
 
 
-REQUIRED_COLUMNS = {
-    "company",
-    "ticker",
-    "quarter",
-    "year",
-    "date",
-    "speaker",
-    "speaker_type",
-    "section",
-    "text",
-}
-
-
 def load_transcripts(path: str | Path) -> pd.DataFrame:
-    """Load earnings-call transcripts from a CSV file."""
     path = Path(path)
 
-    if not path.exists():
-        raise FileNotFoundError(f"Transcript dataset not found: {path}")
+    with path.open("r", encoding="utf-8") as f:
+        records = json.load(f)
 
-    df = pd.read_csv(path)
+    rows = []
 
-    missing = REQUIRED_COLUMNS - set(df.columns)
-    if missing:
-        raise ValueError(
-            f"Dataset is missing required columns: {sorted(missing)}"
-        )
+    for record in records:
+        for item in record["structured_content"]:
+            rows.append(
+                {
+                    "company": record["company_name"],
+                    "ticker": record["symbol"],
+                    "quarter": record["quarter"],
+                    "year": record["year"],
+                    "date": record["date"],
+                    "speaker": item["speaker"],
+                    "text": item["text"],
+                }
+            )
 
-    return df
-
-
-if __name__ == "__main__":
-    print("FinSight data loader ready.")
+    return pd.DataFrame(rows)

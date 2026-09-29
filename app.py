@@ -28,13 +28,34 @@ def load_retriever() -> FaissRetriever:
 chunks = load_chunks()
 retriever = load_retriever()
 
+
+# Company ticker -> full company name
+COMPANY_NAMES = {
+    "A": "Agilent Technologies, Inc.",
+    "AAPL": "Apple Inc.",
+    "ABBV": "AbbVie Inc.",
+    "ABNB": "Airbnb, Inc.",
+    "ABT": "Abbott Laboratories",
+}
+
+
 st.sidebar.header("Transcript Selection")
 
 tickers = sorted(chunks["ticker"].unique())
-ticker = st.sidebar.selectbox("Company", tickers)
+
+selected_ticker = st.sidebar.selectbox(
+    "Company",
+    tickers,
+    format_func=lambda ticker: f"{COMPANY_NAMES.get(ticker, ticker)} ({ticker})",
+)
+
+ticker = selected_ticker
 
 quarter_options = ["All"] + sorted(
-    chunks.loc[chunks["ticker"].eq(ticker), "quarter"].unique().tolist()
+    chunks.loc[
+        chunks["ticker"].eq(ticker),
+        "quarter",
+    ].unique().tolist()
 )
 
 quarter = st.sidebar.selectbox("Quarter", quarter_options)
@@ -50,6 +71,7 @@ top_k = st.sidebar.slider(
     max_value=10,
     value=5,
 )
+
 
 if st.button("Ask", type="primary"):
     if not question.strip():
@@ -83,8 +105,15 @@ if st.button("Ask", type="primary"):
 
         with st.expander("Retrieved transcript evidence"):
             for source in result["sources"]:
-                st.markdown(
-                    f"**{source['ticker']} — Q{source['quarter']} "
-                    f"{source['year']} — {source['speaker']}**"
+                company_name = COMPANY_NAMES.get(
+                    source["ticker"],
+                    source["ticker"],
                 )
+
+                st.markdown(
+                    f"**{company_name} ({source['ticker']}) — "
+                    f"Q{source['quarter']} {source['year']} — "
+                    f"{source['speaker']}**"
+                )
+
                 st.write(source["text"])

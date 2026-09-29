@@ -159,3 +159,61 @@ if guidance_rows:
     )
 else:
     st.info("No management guidance statements were found.")
+
+# Multi-Quarter Comparison
+st.divider()
+st.subheader("Multi-Quarter Comparison")
+
+comparison_quarters = st.multiselect(
+    "Select quarters to compare",
+    sorted(
+        chunks.loc[
+            chunks["ticker"].eq(ticker),
+            "quarter",
+        ].unique().tolist()
+    ),
+    default=sorted(
+        chunks.loc[
+            chunks["ticker"].eq(ticker),
+            "quarter",
+        ].unique().tolist()
+    ),
+)
+
+if comparison_quarters:
+    comparison_chunks = chunks[
+        chunks["ticker"].eq(ticker)
+        & chunks["quarter"].isin(comparison_quarters)
+    ].copy()
+
+    comparison_rows = []
+
+    for _, row in comparison_chunks.iterrows():
+        statements = extract_guidance(row["text"])
+
+        for statement in statements:
+            comparison_rows.append(
+                {
+                    "Quarter": f"Q{row['quarter']} {row['year']}",
+                    "Speaker": row["speaker"],
+                    "Management Statement": statement,
+                }
+            )
+
+    if comparison_rows:
+        comparison_df = pd.DataFrame(comparison_rows)
+
+        st.write(
+            f"Comparing management statements for "
+            f"**{COMPANY_NAMES.get(ticker, ticker)}**."
+        )
+
+        st.dataframe(
+            comparison_df,
+            use_container_width=True,
+            hide_index=True,
+        )
+    else:
+        st.info("No management statements were found for the selected quarters.")
+else:
+    st.info("Select at least one quarter to compare.")

@@ -1,22 +1,18 @@
-import re
-
 import pandas as pd
 
 
 def clean_text(text: str) -> str:
-    """Normalize transcript text for downstream retrieval."""
-    if pd.isna(text):
+    if not isinstance(text, str):
         return ""
 
-    text = str(text)
-    text = re.sub(r"\s+", " ", text)
+    text = " ".join(text.split())
     return text.strip()
 
 
 def preprocess_transcripts(df: pd.DataFrame) -> pd.DataFrame:
-    """Clean transcript text while preserving the original metadata."""
-    result = df.copy()
-    result["text"] = result["text"].apply(clean_text)
-    result = result[result["text"].str.len() > 0].reset_index(drop=True)
+    df = df.copy()
+    df["text"] = df["text"].apply(clean_text)
 
-    return result
+    df = df[df["text"].str.len() > 0].reset_index(drop=True)
+
+    return df

@@ -120,3 +120,16 @@ def generate_answer(
         "answer": response.choices[0].message.content,
         "sources": source_list,
     }
+
+def format_sources(sources: list[dict]) -> list[str]:
+    """Format retrieved chunks for display in the UI."""
+    formatted = []
+
+    for source in sources:
+        formatted.append(
+            f"{source['ticker']} — Q{source['quarter']} {source['year']} "
+            f"— {source['speaker']} "
+            f"(score: {source['score']:.3f})"
+        )
+
+    return formatted
